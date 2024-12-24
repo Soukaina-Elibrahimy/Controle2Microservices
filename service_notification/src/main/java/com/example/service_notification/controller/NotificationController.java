@@ -1,4 +1,4 @@
-package com.example.service_notification;
+package com.example.service_notification.controller;
 
 import com.example.service_notification.model.Notification;
 import com.example.service_notification.repository.NotificationRepository;

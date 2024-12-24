@@ -11,20 +11,16 @@ import java.util.List;
 public class ProduitService {
     @Autowired
     private ProduitRepository produitRepository;
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
 
-    public Produit ajouterProduit(Produit produit) {
-        return produitRepository.save(produit);
+    public Produit getProduitById(Long id) {
+        return produitRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produit non trouvé"));
     }
-
-    public Produit obtenirProduit(Long id) {
-        return produitRepository.findById(id).orElseThrow(() -> new RuntimeException("Produit non trouvé"));
-    }
-
-    public List<Produit> listerProduits() {
-        return produitRepository.findAll();
-    }
-
-    public void supprimerProduit(Long id) {
-        produitRepository.deleteById(id);
+    public void updateProduit(Produit produit) {
+        produitRepository.save(produit);
+        // Envoyer un message Kafka
+        kafkaTemplate.send("produitTopic", "Produit mis à jour : " + produit.getId());
     }
 }
